@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ResultScreen extends StatefulWidget {
   int correctAnswer;
 
-  ResultScreen(this.correctAnswer);
+  ResultScreen({required this.correctAnswer});
 
   @override
   State<ResultScreen> createState() => _ResultScreenState();

@@ -69,7 +69,7 @@ class _QuizScreenState extends State<QuizScreen> {
     if(questionCount != 10){
       installQuestions();
     }else{
-      Navigator.pushReplacement(context, MaterialPageRoute(builder : (context) => ResultScreen(correctCount)));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder : (context) => ResultScreen(correctAnswer: correctCount)));
     }
   }
 
