@@ -1,6 +1,10 @@
 import 'package:dictionary_app/DetailPage.dart';
 import 'package:dictionary_app/Words.dart';
+import 'WordsResponse.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 
 void main() {
   runApp(const MyApp());
@@ -35,18 +39,21 @@ class _HomePageState extends State<HomePage> {
   bool isSearching = false;
   String searchWord = "";
 
+  List<Words> parseWordsResponse(String response){
+    return WordsResponse.fromJson(json.decode(response)).wordsList;
+  }
+
   Future<List<Words>> showAllWords() async{
-    var wordsList = <Words>[];
+    var url = Uri.parse("http://kasimadalan.pe.hu/sozluk/tum_kelimeler.php");
+    var response = await http.get(url);
 
-    var w1 = Words(1, "Dictionary", "Sozluk");
-    var w2 = Words(2, "Word", "Kelime");
-    var w3 = Words(3, "Future", "Gelecek");
-
-    wordsList.add(w1);
-    wordsList.add(w2);
-    wordsList.add(w3);
-    
-    return wordsList;
+    return parseWordsResponse(response.body);
+  }
+  Future<List<Words>> search(String search) async {
+    var url = Uri.parse("http://kasimadalan.pe.hu/sozluk/kelime_ara.php");
+    var data = {"ingilizce":search};
+    var response = await http.post(url,body: data);
+    return parseWordsResponse(response.body);
   }
 
   @override
@@ -86,7 +93,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: FutureBuilder<List<Words>>(
-        future: showAllWords(),
+        future: isSearching ? search(searchWord) : showAllWords(),
         builder: (context,snapshot){
           if(snapshot.hasData){
               var tmpWordsList = snapshot.data;
